@@ -1,0 +1,36 @@
+#!/bin/sh /etc/rc.common
+ 
+START=99
+STPO=80
+
+stop(){
+    ps | grep 'python /root/HeartBeat/Client7.py' |grep -v 'grep'| awk '{print $1}' | xargs kill > /dev/null  2>> /root/HeartBeat/logsys.txt
+
+}
+
+start(){
+    stop
+    sleep 3
+    a=`ps | grep "python /root/HeartBeat/Client7.py"|grep -v "grep"|wc -l`;
+    #echo $a;
+    #if [ $a = '1' -o $a = 0 ];then
+    if [ $a = '0' ];then
+        rm /root/HeartBeat/logsys.txt
+        date +%Y-%m-%d/%H:%M:%S >> /root/HeartBeat/logsys.txt
+        echo Starting >> /root/HeartBeat/logsys.txt
+        python /root/HeartBeat/Client7.py >/dev/null  2>> /root/HeartBeat/logsys.txt &
+        #echo start
+    else
+        #echo doing nothing
+        date +%Y-%m-%d/%H:%M:%S >> /root/HeartBeat/logsys.txt
+        echo StartFail >> /root/HeartBeat/logsys.txt
+        b=`ls -l /root/HeartBeat/logsys.txt  | awk '{print $5}`
+        if [ $b -gt 1024 ];then
+            rm /root/HeartBeat/logsys.txt
+        fi
+    fi
+}
+
+restart(){
+    start
+}
