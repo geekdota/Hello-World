@@ -1,5 +1,4 @@
 #coding:utf-8
-#Ver 20170906
 import time
 import sys
 import re
